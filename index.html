@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Owasco Lake Cottage — Memory Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lake: #3a7ca5;
+    --lake-light: #d0e8f5;
+    --lake-dark: #1d4e6e;
+    --sand: #f5e6c8;
+    --sand-dark: #d4b483;
+    --wood: #8b5e3c;
+    --green: #4a7c59;
+    --sky: #e8f4fd;
+    --text: #2c2c2c;
+    --muted: #7a7a7a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--sky);
+    font-family: 'Lato', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ripple background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(
+        180deg,
+        transparent,
+        transparent 40px,
+        rgba(58,124,165,0.04) 40px,
+        rgba(58,124,165,0.04) 42px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .header .lake-icon {
+    font-size: 52px;
+    display: block;
+    margin-bottom: 12px;
+    animation: sway 4s ease-in-out infinite;
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 5vw, 38px);
+    color: var(--lake-dark);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--wood);
+  }
+
+  .header p {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    background: rgba(58,124,165,0.15);
+    border-radius: 99px;
+    height: 6px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    animation: fadeDown 0.8s ease 0.2s both;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--lake), var(--green));
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .progress-label {
+    text-align: right;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+    margin-bottom: 24px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  /* Category tabs */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    animation: fadeDown 0.8s ease 0.3s both;
+  }
+
+  .tab {
+    padding: 7px 16px;
+    border-radius: 99px;
+    border: 1.5px solid var(--lake-light);
+    background: white;
+    color: var(--lake);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+  }
+
+  .tab:hover { background: var(--lake-light); }
+  .tab.active {
+    background: var(--lake);
+    color: white;
+    border-color: var(--lake);
+  }
+
+  /* Question card */
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px 36px;
+    box-shadow: 0 4px 30px rgba(29,78,110,0.10), 0 1px 4px rgba(29,78,110,0.06);
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease both;
+    border-left: 4px solid var(--lake);
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 40px rgba(29,78,110,0.14), 0 2px 8px rgba(29,78,110,0.08);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-number {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--lake);
+    margin-bottom: 10px;
+  }
+
+  .card-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--lake-dark);
+    margin-bottom: 16px;
+  }
+
+  .card-prompt {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: var(--sand);
+    border-radius: 10px;
+  }
+
+  .card-prompt::before { content: '💡 '; }
+
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--lake-light);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--sky);
+    line-height: 1.6;
+  }
+
+  textarea:focus { border-color: var(--lake); background: white; }
+  textarea::placeholder { color: #b0b8c4; }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    background: var(--lake-light);
+    color: var(--lake-dark);
+    margin-bottom: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* Navigation */
+  .nav {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+  }
+
+  button.btn {
+    padding: 12px 28px;
+    border-radius: 99px;
+    border: none;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary {
+    background: var(--lake);
+    color: white;
+  }
+  .btn-primary:hover { background: var(--lake-dark); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--lake);
+    border: 1.5px solid var(--lake-light) !important;
+  }
+  .btn-secondary:hover { background: var(--lake-light); }
+
+  .btn-export {
+    background: var(--wood);
+    color: white;
+    width: 100%;
+    padding: 16px;
+    font-size: 15px;
+    margin-top: 24px;
+    border-radius: 14px;
+    display: none;
+  }
+  .btn-export:hover { background: #6e4b2f; }
+  .btn-export.visible { display: block; }
+
+  /* All view */
+  .all-questions { display: none; }
+  .all-questions.active { display: block; }
+  .single-view { display: block; }
+  .single-view.hidden { display: none; }
+
+  .all-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(29,78,110,0.07);
+    border-left: 3px solid var(--sand-dark);
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .all-card .q-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--wood);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .all-card .q-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--lake-dark);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .all-card textarea { min-height: 70px; }
+
+  /* Completion */
+  .completion {
+    text-align: center;
+    padding: 48px 24px;
+    animation: fadeUp 0.6s ease both;
+    display: none;
+  }
+  .completion.active { display: block; }
+  .completion .big-icon { font-size: 64px; margin-bottom: 20px; }
+  .completion h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--lake-dark);
+    margin-bottom: 12px;
+  }
+  .completion p { color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 400px; margin: 0 auto 28px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="header">
+    <span class="lake-icon">⛵</span>
+    <h1>The <em>Owasco Lake</em> Cottage</h1>
+    <p style="font-family:'Playfair Display',serif; font-size:20px; font-style:italic; color:#8b5e3c; margin-bottom:10px;">A Memory Guide</p>
+    <p>Taking a walk down memory lane, our memories of "the cottage."</p>
+  </div>
+
+  <div id="main">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+    <div class="progress-label" id="progressLabel">0 of 30 answered</div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="filterCategory('all')">All Questions</button>
+      <button class="tab" onclick="filterCategory('cottage')">🏡 The Cottage</button>
+      <button class="tab" onclick="filterCategory('lake')">🌊 The Lake</button>
+      <button class="tab" onclick="filterCategory('routines')">☀️ Daily Life</button>
+      <button class="tab" onclick="filterCategory('people')">👨‍👩‍👧 Family</button>
+      <button class="tab" onclick="filterCategory('senses')">🌿 Senses</button>
+      <button class="tab" onclick="filterCategory('magic')">✨ Magic Moments</button>
+
+    </div>
+
+    <div class="single-view hidden" id="singleView">
+      <!-- Single card navigation -->
+    </div>
+
+    <div class="all-questions active" id="allView">
+      <!-- All questions rendered here -->
+    </div>
+
+    <button class="btn btn-export" id="exportBtn" onclick="exportAnswers()">📋 Copy All Answers to Clipboard</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  // COTTAGE
+  { id: 1, cat: 'cottage', q: "What was the very first thing you noticed when you arrived at the cottage each summer?", prompt: "Think about pulling up in the car — smells, sounds, the look of the place..." },
+  { id: 2, cat: 'cottage', q: "How would you describe the cottage to someone who'd never seen it? What made it look special from the outside?", prompt: "Color, shape, porch, garden, the way it sat near the water..." },
+  { id: 3, cat: 'cottage', q: "What was the most special room or spot inside the cottage?", prompt: "A reading nook, a certain chair, the kitchen table, someone's bedroom..." },
+  { id: 4, cat: 'cottage', q: "Were there any quirky or funny things about the cottage — things that only worked a certain way?", prompt: "A stuck door, a creaky step, a tricky window, an old appliance..." },
+  { id: 5, cat: 'cottage', q: "What did the cottage smell like when you first walked in?", prompt: "Old wood, lake air, sunscreen, something cooking, the particular smell of 'summer'..." },
+  { id: 6, cat: 'cottage', q: "Were there decorations or objects in the cottage that you especially loved or remember?", prompt: "Old paintings, a certain lamp, a shelf of games, a clock on the wall..." },
+  { id: 39, cat: 'cottage', q: "What grew around the edges of the property?", prompt: "Trees, wildflowers, bushes, a garden — anything that felt like part of the place..." },
+
+  // LAKE
+  { id: 7, cat: 'lake', q: "What was your favorite way to spend time on or in Owasco Lake?", prompt: "Swimming, boating, fishing, just sitting by the water, watching sunsets..." },
+  { id: 9, cat: 'lake', q: "Think about places around the lake — stores, restaurants, churches. Which ones did you visit and how did you get there?", prompt: "Did you walk, drive, take a boat? Any favorite spots you looked forward to every summer?" },
+  { id: 10, cat: 'lake', q: "Were there any special spots on the lake or shoreline that felt like 'yours'?", prompt: "A favorite swimming spot, a rock to sit on, a cove, a particular view..." },
+  { id: 11, cat: 'lake', q: "What sounds did the lake make? What did you hear from the cottage at night?", prompt: "Waves, frogs, loons, motorboats in the distance, crickets..." },
+  { id: 12, cat: 'lake', q: "What creatures — fish, birds, insects — did you see around the lake?", prompt: "Any memorable animal encounters? A fish that got away? A heron in the morning?" },
+  { id: 40, cat: 'lake', q: "What did the lake water feel like — cold, silky, murky?", prompt: "How did it feel to swim in it? Did it change throughout the summer?" },
+
+  // DAILY ROUTINES
+  { id: 13, cat: 'routines', q: "What did a perfect summer morning at the cottage look like, start to finish?", prompt: "When did people wake up? Who made breakfast? What happened before noon?" },
+  { id: 14, cat: 'routines', q: "Were there any meals or foods that felt like 'cottage food' — things you only ate there?", prompt: "A special breakfast, dinners on the porch, late-night snacks, ice cream runs..." },
+  { id: 41, cat: 'routines', q: "What was on the kitchen table in the mornings?", prompt: "Coffee, cereal, newspapers, a radio, flowers — what do you picture there?" },
+  { id: 15, cat: 'routines', q: "What did everyone do during a lazy afternoon when it was too hot or rainy to be outside?", prompt: "Card games, puzzles, naps, reading, watching TV, telling stories..." },
+  { id: 16, cat: 'routines', q: "Were there any summer traditions or rituals the family did every year without fail?", prompt: "A certain trip, a special meal, a game, a way of marking the start or end of summer..." },
+  { id: 17, cat: 'routines', q: "What was bedtime like at the cottage? Was it different from home?", prompt: "Who slept where, the sounds at night, staying up late, stargazing..." },
+  { id: 18, cat: 'routines', q: "Did you ever explore the town or area around Owasco Lake? Any favorite spots nearby?", prompt: "Ice cream shops, diners, parks, local stores, drives along the lake..." },
+
+  // FAMILY & PEOPLE
+  { id: 19, cat: 'people', q: "Who came to the cottage — immediate family, extended family, friends? Who do you picture most when you think of it?", prompt: "Any grandparents, aunts and uncles, neighbors, family friends who were always there?" },
+  { id: 20, cat: 'people', q: "Was there a 'character' in the family — someone whose personality really came alive at the cottage?", prompt: "Someone who was funnier, more relaxed, more adventurous there than anywhere else..." },
+  { id: 42, cat: 'people', q: "Who was always doing what — did someone always have a fishing rod, or always be in the kitchen?", prompt: "Think about each person and their signature cottage habit or spot..." },
+  { id: 43, cat: 'people', q: "What's one small thing a specific person always said or did at the cottage?", prompt: "A phrase, a routine, a gesture — something so them that it still makes you smile..." },
+  { id: 44, cat: 'people', q: "Who taught you something at the cottage, and what was it?", prompt: "How to fish, how to row, how to play a card game, how to be still..." },
+  { id: 21, cat: 'people', q: "What are the strongest memories of the children playing at the cottage — games, mischief, adventures?", prompt: "Who played with whom, made-up games, exploring, childhood dramas..." },
+  { id: 22, cat: 'people', q: "Were there neighbors or other people at the lake who were part of the summer story?", prompt: "Neighbors the kids played with, a local character, someone you looked forward to seeing..." },
+  { id: 23, cat: 'people', q: "If you had to sum up what the cottage meant to the family in one feeling or phrase, what would it be?", prompt: "Freedom? Belonging? Slowness? Safety? Magic? Home?" },
+
+  // SENSES
+  { id: 24, cat: 'senses', q: "Close your eyes and picture the cottage — what is the very first image that comes to you?", prompt: "Don't overthink it. Just the first picture your mind makes..." },
+  { id: 25, cat: 'senses', q: "What did summer at Owasco Lake taste like?", prompt: "A specific food, a drink, the lake water on your lips, a flavor that was always 'summer'..." },
+  { id: 26, cat: 'senses', q: "What did the dock or the shore feel like under your feet?", prompt: "Warm wood, cold water, sandy ground, slippery rocks..." },
+  { id: 27, cat: 'senses', q: "What is the one smell from the cottage summers you will never forget?", prompt: "Sunscreen, pine, rain on the water, barbecue, someone's perfume..." },
+  { id: 45, cat: 'senses', q: "What's one tiny detail — a sound, an object, a smell — that takes you right back instantly?", prompt: "The thing that, if you encountered it today, would put you straight back at the cottage..." },
+
+  // MAGIC MOMENTS
+  { id: 28, cat: 'magic', q: "What is the single happiest memory you have from summers at that cottage?", prompt: "Take your time. The one that makes you smile right away..." },
+  { id: 29, cat: 'magic', q: "Was there ever a summer that felt different from the rest — more special, harder, or more memorable?", prompt: "A big family event, a storm, a change — something that made one summer stand out..." },
+  { id: 46, cat: 'magic', q: "What did the last day of the season feel like?", prompt: "Packing up, saying goodbye to the lake, the drive home — what was the feeling of it ending each year?" },
+  { id: 30, cat: 'magic', q: "If the cottage could talk, what story do you think it would most want to tell?", prompt: "The story it witnessed that meant the most — a perfect day, a family moment, a summer of change..." },
+
+];
+
+const answers = {};
+let currentFilter = 'all';
+
+function getFiltered() {
+  if (currentFilter === 'all') return questions;
+  return questions.filter(q => q.cat === currentFilter);
+}
+
+function updateProgress() {
+  const filled = Object.values(answers).filter(v => v.trim().length > 0).length;
+  const pct = Math.round((filled / questions.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${filled} of ${questions.length} answered`;
+  const exportBtn = document.getElementById('exportBtn');
+  if (filled > 0) exportBtn.classList.add('visible'); else exportBtn.classList.remove('visible');
+}
+
+function catLabel(cat) {
+  const map = { cottage: '🏡 The Cottage', lake: '🌊 The Lake', routines: '☀️ Daily Life', people: '👨‍👩‍👧 Family', senses: '🌿 Senses', magic: '✨ Magic Moments' };
+  return map[cat] || cat;
+}
+
+function renderAll() {
+  const container = document.getElementById('allView');
+  const list = getFiltered();
+  container.innerHTML = list.map((q, i) => `
+    <div class="all-card" style="animation-delay: ${i * 0.05}s">
+      <div class="q-label">${catLabel(q.cat)}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="card-prompt">${q.prompt}</div>
+      <textarea
+        placeholder="Mom's answer..."
+        oninput="saveAnswer(${q.id}, this.value)"
+        rows="3"
+      >${answers[q.id] || ''}</textarea>
+    </div>
+  `).join('');
+}
+
+function saveAnswer(id, val) {
+  answers[id] = val;
+  updateProgress();
+}
+
+function filterCategory(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  renderAll();
+}
+
+function exportAnswers() {
+  let text = "OWASCO LAKE COTTAGE — MOM'S MEMORIES\n";
+  text += "=".repeat(44) + "\n\n";
+  questions.forEach(q => {
+    if (answers[q.id] && answers[q.id].trim()) {
+      text += `[${catLabel(q.cat).replace(/[^\w\s]/g,'').trim()}]\n`;
+      text += q.q + "\n";
+      text += answers[q.id].trim() + "\n\n";
+    }
+  });
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('exportBtn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy All Answers to Clipboard', 2000);
+  });
+}
+
+// Init
+renderAll();
+updateProgress();
+</script>
+</body>
+</html>
