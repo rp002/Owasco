@@ -364,6 +364,18 @@
   }
   .btn-submit:hover { background: #6e4b2f; transform: translateY(-1px); }
   .btn-submit:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+  .btn-save {
+    background: var(--lake);
+    margin-bottom: 12px;
+  }
+  .btn-save:hover { background: var(--lake-dark); }
+  .btn-divider {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin: 4px 0 12px;
+    font-style: italic;
+  }
   .success-msg {
     display: none;
     text-align: center;
@@ -542,9 +554,11 @@
 
     <div class="submit-section" id="submitSection">
       <h3>📬 Send Your Memories</h3>
-      <p>When you're ready, enter your name and click submit — your answers will be emailed directly to Michelle.</p>
+      <p>Enter your name below, then choose an option — <strong>save a draft</strong> if you'd like to come back and add more, or <strong>submit</strong> when you're fully done.</p>
       <input class="name-input" id="responderName" type="text" placeholder="" />
-      <button class="btn-submit" id="submitBtn" onclick="submitAnswers()">✉️ Submit My Memories</button>
+      <button class="btn-submit btn-save" id="saveBtn" onclick="saveProgress()">💾 Save Progress &amp; Come Back Later</button>
+      <div class="btn-divider">— or —</div>
+      <button class="btn-submit" id="submitBtn" onclick="submitAnswers()">✉️ Submit My Memories — I'm Done!</button>
     </div>
     <div class="success-msg" id="successMsg">
       <div class="icon">🏡</div>
@@ -660,6 +674,54 @@ function filterCategory(cat) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   event.target.classList.add('active');
   renderAll();
+}
+
+async function saveProgress() {
+  const name = document.getElementById('responderName').value.trim() || 'Anonymous';
+  const btn = document.getElementById('saveBtn');
+
+  let body = `OWASCO LAKE COTTAGE MEMORIES — DRAFT IN PROGRESS\nSubmitted by: ${name}\n${'='.repeat(44)}\n\n`;
+  let count = 0;
+  questions.forEach(q => {
+    if (answers[q.id] && answers[q.id].trim()) {
+      body += `[${catLabel(q.cat).replace(/[^\w\s]/g,'').trim()}]\n`;
+      body += q.q + '\n';
+      body += answers[q.id].trim() + '\n\n';
+      count++;
+    }
+  });
+
+  if (count === 0) {
+    alert('Please answer at least one question before saving.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/mlgkovkj', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name, message: body, _subject: `DRAFT — Cottage Memories from ${name} (${count} answers so far)` })
+    });
+
+    if (res.ok) {
+      btn.textContent = '✅ Draft Saved! Come back anytime.';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '💾 Save Progress & Come Back Later';
+      }, 3000);
+    } else {
+      btn.disabled = false;
+      btn.textContent = '💾 Save Progress & Come Back Later';
+      alert('Something went wrong. Please try again.');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '💾 Save Progress & Come Back Later';
+    alert('Could not save. Please check your connection and try again.');
+  }
 }
 
 async function submitAnswers() {
