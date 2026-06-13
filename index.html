@@ -508,7 +508,7 @@ function updateProgress() {
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent = `${filled} of ${questions.length} answered`;
   const submitSection = document.getElementById('submitSection');
-  if (filled > 0) submitSection.classList.add('visible'); else submitSection.classList.remove('visible');
+  submitSection.classList.add('visible');
 }
 
 function catLabel(cat) {
