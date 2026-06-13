@@ -386,6 +386,36 @@
     border: 2px solid #4a7c59;
   }
   .success-msg .icon { font-size: 48px; margin-bottom: 12px; }
+  .restored-banner {
+    display: none;
+    background: #f0faf4;
+    border: 1.5px solid #4a7c59;
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #2d6a42;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeDown 0.6s ease both;
+  }
+  .restored-banner.visible { display: block; }
+  .btn-clear {
+    background: transparent;
+    border: 1.5px solid #ccc;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 99px;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    margin-top: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: #e55; color: #e55; }
   .success-msg h3 { font-family: 'Playfair Display', serif; color: var(--green); font-size: 22px; margin-bottom: 8px; }
   .success-msg p { color: var(--muted); font-size: 14px; }
 
@@ -528,6 +558,7 @@
       </div>
     </div>
 
+    <div class="restored-banner" id="restoredBanner">✅ Your progress has been restored — pick up right where you left off!</div>
     <div class="progress-bar">
       <div class="progress-fill" id="progressFill" style="width: 0%"></div>
     </div>
@@ -559,6 +590,7 @@
       <button class="btn-submit btn-save" id="saveBtn" onclick="saveProgress()">💾 Save Progress &amp; Come Back Later</button>
       <div class="btn-divider">— or —</div>
       <button class="btn-submit" id="submitBtn" onclick="submitAnswers()">✉️ Submit My Memories — I'm Done!</button>
+      <button class="btn-clear" onclick="clearProgress()">🗑 Clear all answers and start fresh</button>
     </div>
     <div class="success-msg" id="successMsg">
       <div class="icon">🏡</div>
@@ -667,6 +699,38 @@ function renderAll() {
 function saveAnswer(id, val) {
   answers[id] = val;
   updateProgress();
+  persistAnswers();
+}
+
+function persistAnswers() {
+  try {
+    localStorage.setItem('owasco_answers', JSON.stringify(answers));
+  } catch(e) {}
+}
+
+function clearProgress() {
+  if (!confirm('Are you sure you want to clear all your answers and start fresh?')) return;
+  try { localStorage.removeItem('owasco_answers'); } catch(e) {}
+  Object.keys(answers).forEach(k => delete answers[k]);
+  renderAll();
+  updateProgress();
+  document.getElementById('restoredBanner').classList.remove('visible');
+}
+
+function restoreAnswers() {
+  try {
+    const saved = localStorage.getItem('owasco_answers');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      const hasAnswers = Object.values(parsed).some(v => v && v.trim().length > 0);
+      if (hasAnswers) {
+        Object.assign(answers, parsed);
+        document.getElementById('restoredBanner').classList.add('visible');
+        return true;
+      }
+    }
+  } catch(e) {}
+  return false;
 }
 
 function filterCategory(cat) {
@@ -763,6 +827,7 @@ async function submitAnswers() {
 }
 
 // Init
+restoreAnswers();
 renderAll();
 updateProgress();
 </script>
