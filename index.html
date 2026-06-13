@@ -273,18 +273,70 @@
   }
   .btn-secondary:hover { background: var(--lake-light); }
 
-  .btn-export {
+  .submit-section {
+    display: none;
+    margin-top: 32px;
+    background: white;
+    border-radius: 20px;
+    padding: 32px 36px;
+    box-shadow: 0 4px 30px rgba(29,78,110,0.10);
+    border-left: 4px solid var(--wood);
+  }
+  .submit-section.visible { display: block; }
+  .submit-section h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--lake-dark);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .submit-section p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .name-input {
+    width: 100%;
+    border: 1.5px solid var(--lake-light);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-family: 'Lato', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    margin-bottom: 16px;
+    background: var(--sky);
+    transition: border-color 0.2s;
+  }
+  .name-input:focus { border-color: var(--lake); background: white; }
+  .btn-submit {
     background: var(--wood);
     color: white;
     width: 100%;
     padding: 16px;
-    font-size: 15px;
-    margin-top: 24px;
+    font-size: 16px;
     border-radius: 14px;
-    display: none;
+    border: none;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
   }
-  .btn-export:hover { background: #6e4b2f; }
-  .btn-export.visible { display: block; }
+  .btn-submit:hover { background: #6e4b2f; transform: translateY(-1px); }
+  .btn-submit:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 32px;
+    background: #f0faf4;
+    border-radius: 16px;
+    margin-top: 24px;
+    border: 2px solid #4a7c59;
+  }
+  .success-msg .icon { font-size: 48px; margin-bottom: 12px; }
+  .success-msg h3 { font-family: 'Playfair Display', serif; color: var(--green); font-size: 22px; margin-bottom: 8px; }
+  .success-msg p { color: var(--muted); font-size: 14px; }
 
   /* All view */
   .all-questions { display: none; }
@@ -374,7 +426,17 @@
       <!-- All questions rendered here -->
     </div>
 
-    <button class="btn btn-export" id="exportBtn" onclick="exportAnswers()">📋 Copy All Answers to Clipboard</button>
+    <div class="submit-section" id="submitSection">
+      <h3>📬 Send Your Memories</h3>
+      <p>When you're ready, enter your name and click submit — your answers will be emailed directly to Michelle.</p>
+      <input class="name-input" id="responderName" type="text" placeholder="Your name (e.g. Mom, Aunt Karen, Uncle Fred)" />
+      <button class="btn-submit" id="submitBtn" onclick="submitAnswers()">✉️ Submit My Memories</button>
+    </div>
+    <div class="success-msg" id="successMsg">
+      <div class="icon">🏡</div>
+      <h3>Thank you!</h3>
+      <p>Your memories have been sent to Michelle.<br>They will live on in BlackBerry Gully forever.</p>
+    </div>
   </div>
 
 </div>
@@ -445,8 +507,8 @@ function updateProgress() {
   const pct = Math.round((filled / questions.length) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressLabel').textContent = `${filled} of ${questions.length} answered`;
-  const exportBtn = document.getElementById('exportBtn');
-  if (filled > 0) exportBtn.classList.add('visible'); else exportBtn.classList.remove('visible');
+  const submitSection = document.getElementById('submitSection');
+  if (filled > 0) submitSection.classList.add('visible'); else submitSection.classList.remove('visible');
 }
 
 function catLabel(cat) {
@@ -483,21 +545,42 @@ function filterCategory(cat) {
   renderAll();
 }
 
-function exportAnswers() {
-  let text = "OWASCO LAKE COTTAGE — MOM'S MEMORIES\n";
-  text += "=".repeat(44) + "\n\n";
+async function submitAnswers() {
+  const name = document.getElementById('responderName').value.trim() || 'Anonymous';
+  const btn = document.getElementById('submitBtn');
+
+  let body = `OWASCO LAKE COTTAGE MEMORIES\nSubmitted by: ${name}\n${'='.repeat(44)}\n\n`;
   questions.forEach(q => {
     if (answers[q.id] && answers[q.id].trim()) {
-      text += `[${catLabel(q.cat).replace(/[^\w\s]/g,'').trim()}]\n`;
-      text += q.q + "\n";
-      text += answers[q.id].trim() + "\n\n";
+      body += `[${catLabel(q.cat).replace(/[^\w\s]/g,'').trim()}]\n`;
+      body += q.q + '\n';
+      body += answers[q.id].trim() + '\n\n';
     }
   });
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('exportBtn');
-    btn.textContent = '✅ Copied!';
-    setTimeout(() => btn.textContent = '📋 Copy All Answers to Clipboard', 2000);
-  });
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/mlgkovkj', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name, message: body, _subject: `Cottage Memories from ${name}` })
+    });
+
+    if (res.ok) {
+      document.getElementById('submitSection').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    } else {
+      btn.disabled = false;
+      btn.textContent = '✉️ Submit My Memories';
+      alert('Something went wrong. Please try again.');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '✉️ Submit My Memories';
+    alert('Could not send. Please check your connection and try again.');
+  }
 }
 
 // Init
