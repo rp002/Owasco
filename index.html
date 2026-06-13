@@ -639,7 +639,7 @@ function renderAll() {
       <div class="q-text">${q.q}</div>
       <div class="card-prompt">${q.prompt}</div>
       <textarea
-        placeholder="Mom's answer..."
+        placeholder=""
         oninput="saveAnswer(${q.id}, this.value)"
         rows="3"
       >${answers[q.id] || ''}</textarea>
